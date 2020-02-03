@@ -1,36 +1,37 @@
-import { Entity, ObjectIdColumn, ObjectID, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { IsEmail, Length, IsEnum } from "class-validator";
+import { Entity, ObjectIdColumn, Column, BeforeInsert } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { ERole } from "../../config/constants";
-import { CommonEntity } from "../../common/entity.common";
+import { BaseEntity } from "../../common/entity.base";
+import { ObjectID } from "mongodb";
+import { ApiProperty } from "@nestjs/swagger";
 
 @Entity({ name: "users" })
-export class User extends CommonEntity {
+export class User extends BaseEntity {
     @ObjectIdColumn()
+    @ApiProperty()
     _id: ObjectID;
 
     @Column()
-    @Length(1, 10)
+    @ApiProperty()
     firstName: string;
 
     @Column()
-    @Length(1, 10)
+    @ApiProperty()
     lastName: string;
 
     @Column({ unique: true })
-    @IsEmail()
+    @ApiProperty()
     email: string;
 
     @Column({ unique: true })
-    @Length(4, 20)
+    @ApiProperty()
     username: string;
 
     @Column()
-    @Length(4, 100)
     password: string;
 
     @Column()
-    @IsEnum(ERole)
+    @ApiProperty()
     role: ERole;
 
     @BeforeInsert()

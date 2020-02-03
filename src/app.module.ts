@@ -4,6 +4,7 @@ import { AuthModule } from "./api/auth/auth.module";
 import { UsersModule } from "./api/users/users.module";
 import { BooksModule } from "./api/books/books.module";
 import { DATABASE_URI } from "./config/secrets";
+import { User } from "./api/users/users.entity";
 
 @Module({
     imports: [
@@ -15,7 +16,7 @@ import { DATABASE_URI } from "./config/secrets";
             logging: true,
             synchronize: true,
             entities: [
-                "dist/**/*.entity.{ts,js}"
+                User
             ],
         }),
         AuthModule,
