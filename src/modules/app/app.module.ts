@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { AuthModule } from "./api/auth/auth.module";
-import { UsersModule } from "./api/users/users.module";
-import { BooksModule } from "./api/books/books.module";
-import { DATABASE_URI } from "./config/secrets";
-import { User } from "./api/users/users.entity";
+import { AuthModule } from "../auth/auth.module";
+import { UsersModule } from "../users/users.module";
+import { BooksModule } from "../books/books.module";
+import { DATABASE_URI } from "../../config/secrets";
+import { User } from "../users/users.entity";
 
 @Module({
     imports: [
