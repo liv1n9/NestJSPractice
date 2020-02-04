@@ -1,12 +1,15 @@
-import { Controller, Get, Post, Body, UseGuards } from "@nestjs/common";
-import { User } from "./users.entity";
+import { Controller, Get, Post, Body, UseGuards, Delete, Param, Patch } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { ERole } from "../../config/constants";
-import { Roles } from "../../common/guards/roles/roles.decorator";
-import { RolesGuard } from "../../common/guards/roles/roles.guard";
+import { Roles } from "../../common/decorators/roles.decorator";
+import { RolesGuard } from "../../common/guards/roles.guard";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiTags, ApiCreatedResponse, ApiBearerAuth, ApiOkResponse } from "@nestjs/swagger";
 import { CreateUserDTO } from "./dto/create-user.dto";
+import { GetUserDTO } from "./dto/get-user.dto";
+import { FindAndModifyWriteOpResultObject } from "typeorm";
+import { ModifyResultDTO } from "../../common/dto/modify-result.dto";
+import { UpdateUserDTO } from "./dto/update-user.dto";
 
 @Controller("users")
 @UseGuards(RolesGuard)
@@ -19,17 +22,29 @@ export class UsersController {
     @Get()
     @Roles(ERole.ADMIN)
     @ApiOkResponse({
-        type: [User],
+        type: [GetUserDTO],
     })
-    async findAll(): Promise<User[]> {
+    async findAll(): Promise<GetUserDTO[]> {
         return await this.userService.findAll();
     }
 
     @Post()
     @Roles(ERole.ADMIN)
-    @ApiCreatedResponse({ type: User })
-    async create(@Body() user: CreateUserDTO): Promise<User> {
-        const { password, ...result } = await this.userService.create(user);
-        return result as User;
+    @ApiCreatedResponse({ type: GetUserDTO })
+    async create(@Body() user: CreateUserDTO): Promise<GetUserDTO> {
+        const { password, createdAt, updatedAt, ...result } = await this.userService.create(user);
+        return result;
+    }
+
+    @Patch(":id")
+    @ApiOkResponse({ type: ModifyResultDTO })
+    async update(@Param("id") id: string, @Body() user: UpdateUserDTO): Promise<ModifyResultDTO> {
+        return await this.userService.updateById(id, user);
+    }
+
+    @Delete(":id")
+    @ApiOkResponse({ type: ModifyResultDTO })
+    async deleteById(@Param("id") id: string): Promise<ModifyResultDTO> {
+        return await this.userService.deleteById(id);
     }
 }

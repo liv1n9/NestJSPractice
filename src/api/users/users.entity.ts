@@ -1,9 +1,9 @@
-import { Entity, ObjectIdColumn, Column, BeforeInsert } from "typeorm";
+import { Entity, ObjectIdColumn, Column, BeforeInsert, BeforeUpdate } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { ERole } from "../../config/constants";
 import { BaseEntity } from "../../common/entity.base";
-import { ObjectID } from "mongodb";
 import { ApiProperty } from "@nestjs/swagger";
+import { ObjectID } from "mongodb";
 
 @Entity({ name: "users" })
 export class User extends BaseEntity {
@@ -35,6 +35,7 @@ export class User extends BaseEntity {
     role: ERole;
 
     @BeforeInsert()
+    @BeforeUpdate()
     async hashPassword(): Promise<void> {
         this.password = await bcrypt.hash(this.password, 10);
     }
